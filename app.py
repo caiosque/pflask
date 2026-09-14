@@ -31,7 +31,7 @@ def listar_aluno():
     lista = cursor.fetchall()
     # Fecha a conexão com o banco de dados
     conn.close()
-    return render_template('aluno/lista.html',lista_alunos=lista_alunos)
+   return render_tamplate("aluno/lista.html", lista=lista)
 
 
 
