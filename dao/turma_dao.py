@@ -9,4 +9,3 @@ class TurmaDAO:
         cursor.execute(self.sqlSelect)
         lista = cursor.fetchall()
         return lista
-
