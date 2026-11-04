@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, flash
 from dao.aluno_dao import AlunoDAO
 from dao.professor_dao import ProfessorDAO
 from dao.turma_dao import TurmaDAO
 app = Flask(__name__)
+
+app.secret_key = "uma_chave_secreta"
 
 @app.route('/')
 def home():
@@ -22,11 +24,46 @@ def lista_aluno():
     lista = dao.listar()
     return render_template('aluno/lista.html', lista=lista)
 
+@app.route('/aluno/form')
+def form_aluno():
+    return render_template('aluno/form.html', aluno=None)
+
+
+@app.route('/aluno/salvar/', methods=['POST']) 
+def salvar_aluno(id=None):
+    nome = request.form['nome']
+    idade = request.form['idade']
+    cidade = request.form['cidade']
+    dao = AlunoDAO()
+    result = dao.salvar(id, nome, idade, cidade) 
+    if result["status"] == "ok":
+        flash("Cadastro salvo com sucesso!", "success")
+    else:
+        flash(result["mensagem"], "danger")
+    return redirect('/aluno')
+
+
 @app.route('/professor')
 def lista_professor():
     dao = ProfessorDAO()
     lista = dao.listar()
     return render_template('professor/lista.html', lista=lista)
+
+@app.route('/professor/form')
+def form_professor():
+    return render_template('professor/form.html', professor=None)
+
+@app.route('/professor/salvar/', methods=['POST']) 
+def salvar_professor(id=None):
+    nome = request.form['nome']
+    disciplina = request.form['disciplina']
+    dao = ProfessorDAO()
+    result = dao.salvar(id, nome, disciplina) 
+    if result["status"] == "ok":
+        flash("Cadastro salvo com sucesso!", "success")
+    else:
+        flash(result["mensagem"], "danger")
+    return redirect('/professor')
 
 @app.route('/turma')
 def lista_turma():
