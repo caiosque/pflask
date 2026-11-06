@@ -10,3 +10,26 @@ class TurmaDAO:
         lista = cursor.fetchall()
         conn.close()
         return lista
+
+    def listar_cursos(self):
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute('SELECT id, nome_curso FROM curso')
+        cursos = cursor.fetchall()
+        conn.close()
+        return cursos
+
+    def salvar(self, id, semestre, curso_id, professor_id):
+        conn = get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute(
+                'INSERT INTO turma (semestre, curso_id, professor_id) VALUES (%s, %s, %s)',
+                (semestre, curso_id, professor_id)
+            )
+            conn.commit()
+            return {"status": "ok"}
+        except Exception as e:
+            return {"status": "erro", "mensagem": f"Erro: {str(e)}"}
+        finally:
+            conn.close()
